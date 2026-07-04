@@ -1,0 +1,2689 @@
+/* nodeStyles.css
+
+* Premium dark-mode design system for the pipeline builder.
+ * Inspired by modern flow-builder UIs with a unique indigo-violet identity.
+ * Features: dark glassmorphism, neon handle glows, category accent strips,
+ * animated micro-interactions, and polished form controls.
+ */
+
+/* ============================================================
+   Google Fonts
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ============================================================
+   CSS Custom Properties — Dark Theme Tokens
+   ============================================================ */
+:root {
+  /* ── Core palette ──────────────────────────────── */
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-surface: #1a1f2e;
+  --bg-elevated: #1f2537;
+  --bg-hover: #252b3d;
+
+  /* ── Text ──────────────────────────────────────── */
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #475569;
+
+  /* ── Borders ───────────────────────────────────── */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.15);
+
+  /* ── Category accent colours ───────────────────── */
+  --cat-io: #3b82f6;
+  --cat-io-glow: rgba(59, 130, 246, 0.25);
+  --cat-io-surface: rgba(59, 130, 246, 0.08);
+  --cat-io-border: rgba(59, 130, 246, 0.20);
+
+  --cat-processing: #a855f7;
+  --cat-processing-glow: rgba(168, 85, 247, 0.25);
+  --cat-processing-surface: rgba(168, 85, 247, 0.08);
+  --cat-processing-border: rgba(168, 85, 247, 0.20);
+
+  --cat-logic: #f59e0b;
+  --cat-logic-glow: rgba(245, 158, 11, 0.25);
+  --cat-logic-surface: rgba(245, 158, 11, 0.08);
+  --cat-logic-border: rgba(245, 158, 11, 0.20);
+
+  --cat-utility: #06b6d4;
+  --cat-utility-glow: rgba(6, 182, 212, 0.25);
+  --cat-utility-surface: rgba(6, 182, 212, 0.08);
+  --cat-utility-border: rgba(6, 182, 212, 0.20);
+
+  /* ── Node card ─────────────────────────────────── */
+  --node-bg: rgba(26, 31, 46, 0.95);
+  --node-border: rgba(255, 255, 255, 0.08);
+  --node-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --node-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --node-radius: 12px;
+
+  /* ── Fields ────────────────────────────────────── */
+  --field-bg: rgba(255, 255, 255, 0.04);
+  --field-bg-hover: rgba(255, 255, 255, 0.06);
+  --field-border: rgba(255, 255, 255, 0.10);
+  --field-focus-ring: rgba(99, 102, 241, 0.4);
+
+  /* ── Typography ────────────────────────────────── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Accent ────────────────────────────────────── */
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-glow: rgba(99, 102, 241, 0.3);
+  --success: #22c55e;
+}
+
+/* ============================================================
+   Light theme — token overrides + a few hard-coded surfaces
+   ============================================================ */
+[data-theme='light'] {
+  --bg-primary: #eef1f7;
+  --bg-secondary: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f3f6fb;
+  --bg-hover: #e6ecf5;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-default: rgba(15, 23, 42, 0.12);
+  --border-strong: rgba(15, 23, 42, 0.20);
+
+  --node-bg: rgba(255, 255, 255, 0.96);
+  --node-border: rgba(15, 23, 42, 0.10);
+  --node-shadow: 0 8px 28px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+  --node-shadow-hover: 0 14px 44px rgba(15, 23, 42, 0.16), 0 4px 14px rgba(15, 23, 42, 0.10);
+
+  --field-bg: rgba(15, 23, 42, 0.03);
+  --field-bg-hover: rgba(15, 23, 42, 0.05);
+  --field-border: rgba(15, 23, 42, 0.14);
+  --field-focus-ring: rgba(99, 102, 241, 0.28);
+}
+
+/* Canvas: light base, softer aurora, light vignette + darker dots. */
+[data-theme='light'] .canvas-wrapper { background: #eef1f7; }
+[data-theme='light'] .canvas-wrapper::before { opacity: 0.6; }
+[data-theme='light'] .canvas-wrapper::after {
+  background: radial-gradient(120% 120% at 50% 50%, transparent 60%, rgba(15, 23, 42, 0.06) 100%);
+}
+[data-theme='light'] .react-flow__background circle { fill: rgba(15, 23, 42, 0.10) !important; }
+
+/* Header + floating surfaces → light glass. */
+[data-theme='light'] .app-header { background: linear-gradient(180deg, #ffffff, #f4f7fb); }
+[data-theme='light'] .pipeline-dock {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(240, 244, 250, 0.92));
+}
+[data-theme='light'] .canvas-actions,
+[data-theme='light'] .toast,
+[data-theme='light'] .confirm-panel,
+[data-theme='light'] .result-panel {
+  background: linear-gradient(160deg, #ffffff, #f4f7fb);
+}
+[data-theme='light'] .result-overlay { background: rgba(15, 23, 42, 0.35); }
+[data-theme='light'] .react-flow__minimap {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(240, 244, 250, 0.94)) !important;
+}
+
+/* New floating panels (control dock, lint, connect menu) → light glass. */
+[data-theme='light'] .control-dock,
+[data-theme='light'] .lint__btn,
+[data-theme='light'] .lint__list,
+[data-theme='light'] .connect-menu {
+  background: linear-gradient(160deg, #ffffff, #f4f7fb);
+}
+[data-theme='light'] .dock-chip__name {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+[data-theme='light'] .dock-chip__name::after { border-top-color: #1e293b; }
+[data-theme='light'] .dock-chip { background: #ffffff; }
+
+/* Connections readable on a light canvas. */
+[data-theme='light'] .react-flow__edge-path { stroke: rgba(79, 70, 229, 0.55) !important; }
+[data-theme='light'] .react-flow__edge.animated path { stroke: rgba(124, 58, 237, 0.75) !important; }
+
+/* Node header text → darker category tones for contrast on pale tint. */
+[data-theme='light'] .base-node__header--io { color: #1d4ed8; }
+[data-theme='light'] .base-node__header--processing { color: #7c3aed; }
+[data-theme='light'] .base-node__header--logic { color: #b45309; }
+[data-theme='light'] .base-node__header--utility { color: #0e7490; }
+
+/* Toggle off-state track needs to read on light. */
+[data-theme='light'] .node-field__toggle { background: rgba(15, 23, 42, 0.15); }
+
+/* Theme toggle button (header). */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+.theme-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+.theme-toggle:active { transform: translateY(0) scale(0.94); }
+
+/* ============================================================
+   Global Overrides for ReactFlow Dark Mode
+   ============================================================ */
+.react-flow__pane {
+  cursor: default !important;
+}
+
+/* Edge — a soft glowing conduit. Motion comes from light orbs streaming along
+   it (see .edge-flow-dot), so no dashes and no arrowheads are needed. */
+.react-flow__edge-path {
+  stroke: rgba(150, 140, 245, 0.42) !important;
+  stroke-width: 2.5 !important;
+  filter: drop-shadow(0 0 4px rgba(129, 140, 248, 0.4)) !important;
+}
+
+.react-flow__edge.animated path {
+  animation: none !important;
+  stroke-dasharray: none !important;
+}
+
+/* Flowing light orbs travelling source → target along the edge. */
+.edge-flow-dot {
+  fill: #e0e7ff;
+  filter: drop-shadow(0 0 4px #818cf8) drop-shadow(0 0 9px rgba(168, 85, 247, 0.85));
+}
+[data-theme='light'] .edge-flow-dot {
+  fill: #6366f1;
+  filter: drop-shadow(0 0 4px #818cf8) drop-shadow(0 0 8px rgba(124, 58, 237, 0.6));
+}
+/* SVG SMIL motion isn't stopped by the global guard — hide orbs instead. */
+@media (prefers-reduced-motion: reduce) {
+  .edge-flow-dot { display: none; }
+}
+
+.react-flow__connection-line {
+  stroke: rgba(220, 210, 255, 0.8) !important;
+  stroke-width: 2.5 !important;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6)) !important;
+}
+
+/* Controls panel dark mode */
+.react-flow__controls {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.react-flow__controls-button {
+  background: var(--bg-elevated) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  fill: var(--text-secondary) !important;
+  color: var(--text-secondary) !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--bg-hover) !important;
+  fill: var(--text-primary) !important;
+}
+
+/* MiniMap — premium glass panel */
+.react-flow__minimap {
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(99, 102, 241, 0.12), transparent 55%),
+    radial-gradient(120% 100% at 100% 100%, rgba(168, 85, 247, 0.12), transparent 55%),
+    linear-gradient(160deg, rgba(24, 29, 44, 0.92), rgba(14, 20, 34, 0.94)) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: 14px !important;
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  animation: minimap-glow 4.5s ease-in-out infinite;
+}
+
+/* Breathing accent ring — shifts indigo → violet. */
+@keyframes minimap-glow {
+  0%, 100% {
+    box-shadow:
+      0 10px 34px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(99, 102, 241, 0.28),
+      0 0 20px rgba(99, 102, 241, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  50% {
+    box-shadow:
+      0 10px 34px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(168, 85, 247, 0.42),
+      0 0 28px rgba(168, 85, 247, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+}
+
+.react-flow__minimap:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong) !important;
+  animation-play-state: paused;
+  box-shadow:
+    0 16px 46px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(129, 140, 248, 0.6),
+    0 0 34px rgba(129, 140, 248, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Interactive minimap — signal drag-to-pan. */
+.react-flow__minimap.react-flow__minimap-pannable { cursor: grab; }
+.react-flow__minimap.react-flow__minimap-pannable:active { cursor: grabbing; }
+
+/* Viewport window — glowing indigo frame. */
+.react-flow__minimap-mask {
+  fill: rgba(8, 11, 20, 0.68) !important;
+  stroke: rgba(129, 140, 248, 0.85) !important;
+  stroke-width: 2.5 !important;
+  filter: drop-shadow(0 0 5px rgba(129, 140, 248, 0.7));
+}
+
+/* Glowing category-coloured node dots. */
+.react-flow__minimap-node {
+  filter: drop-shadow(0 0 4px rgba(129, 140, 248, 0.55));
+  transition: opacity 0.2s ease;
+}
+
+/* ============================================================
+   Base Node Container
+   ============================================================ */
+.base-node {
+  --node-accent: var(--accent);
+  font-family: var(--font-sans);
+  background: var(--node-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--node-border);
+  border-radius: var(--node-radius);
+  box-shadow: var(--node-shadow);
+  width: 100%;
+  height: 100%;
+  min-width: 240px;
+  box-sizing: border-box;
+  overflow: visible;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
+  position: relative;
+  /* Flex column so the body fills a resized node (no empty gaps). */
+  display: flex;
+  flex-direction: column;
+}
+
+.base-node__header,
+.base-node__description { flex-shrink: 0; }
+.base-node__body { flex: 1 1 auto; }
+
+/* Resize handles + edge lines (visible when selected). */
+.base-node .node-resize-line {
+  border-color: color-mix(in srgb, var(--node-accent, var(--accent)) 45%, transparent) !important;
+}
+.base-node .node-resize-handle {
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 3px !important;
+  background: var(--node-accent, var(--accent)) !important;
+  border: 2px solid var(--bg-surface) !important;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--node-accent, var(--accent)) 60%, transparent) !important;
+}
+
+/* Per-category accent drives the top bar, hover glow, and selected ring. */
+.base-node--io { --node-accent: var(--cat-io); }
+.base-node--processing { --node-accent: var(--cat-processing); }
+.base-node--logic { --node-accent: var(--cat-logic); }
+.base-node--utility { --node-accent: var(--cat-utility); }
+
+/* Signature accent bar across the very top of every card. */
+.base-node::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 3;
+  border-radius: var(--node-radius) var(--node-radius) 0 0;
+  background: linear-gradient(90deg, transparent, var(--node-accent), transparent);
+  opacity: 0.85;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+/* Inner top highlight for a glassy, lit-from-above finish. */
+.base-node::after {
+  content: '';
+  position: absolute;
+  inset: 1px 1px auto 1px;
+  height: 40%;
+  border-radius: var(--node-radius) var(--node-radius) 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.base-node:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--node-accent) 45%, transparent);
+  box-shadow:
+    var(--node-shadow-hover),
+    0 0 0 1px color-mix(in srgb, var(--node-accent) 22%, transparent),
+    0 14px 44px color-mix(in srgb, var(--node-accent) 24%, transparent);
+}
+
+.base-node:hover::before {
+  opacity: 1;
+  height: 4px;
+}
+
+/* Category-specific selected glow */
+.base-node.selected {
+  transform: translateY(-1px);
+}
+
+.base-node--io.selected {
+  box-shadow: 0 0 0 2px var(--cat-io), 0 0 24px var(--cat-io-glow), var(--node-shadow);
+  border-color: var(--cat-io-border);
+}
+.base-node--processing.selected {
+  box-shadow: 0 0 0 2px var(--cat-processing), 0 0 24px var(--cat-processing-glow), var(--node-shadow);
+  border-color: var(--cat-processing-border);
+}
+.base-node--logic.selected {
+  box-shadow: 0 0 0 2px var(--cat-logic), 0 0 24px var(--cat-logic-glow), var(--node-shadow);
+  border-color: var(--cat-logic-border);
+}
+.base-node--utility.selected {
+  box-shadow: 0 0 0 2px var(--cat-utility), 0 0 24px var(--cat-utility-glow), var(--node-shadow);
+  border-color: var(--cat-utility-border);
+}
+
+/* ============================================================
+   Node Header — Accent strip on top
+   ============================================================ */
+.base-node__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--node-radius) var(--node-radius) 0 0;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Category-specific header backgrounds */
+.base-node__header--io {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+  color: #93bbfc;
+}
+.base-node__header--processing {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.05));
+  color: #c4a5f7;
+}
+.base-node__header--logic {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+  color: #fbbf47;
+}
+.base-node__header--utility {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.05));
+  color: #67e8f9;
+}
+
+.base-node__header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.base-node__header--io .base-node__header-icon { background: rgba(59, 130, 246, 0.2); }
+.base-node__header--processing .base-node__header-icon { background: rgba(168, 85, 247, 0.2); }
+.base-node__header--logic .base-node__header-icon { background: rgba(245, 158, 11, 0.2); }
+.base-node__header--utility .base-node__header-icon { background: rgba(6, 182, 212, 0.2); }
+
+.base-node__header-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   Node Description
+   ============================================================ */
+.base-node__description {
+  padding: 8px 14px 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Node Body (fields + children)
+   ============================================================ */
+.base-node__body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Subtle category tint in body */
+.base-node__body--io { background: var(--cat-io-surface); }
+.base-node__body--processing { background: var(--cat-processing-surface); }
+.base-node__body--logic { background: var(--cat-logic-surface); }
+.base-node__body--utility { background: var(--cat-utility-surface); }
+
+.base-node__body:last-child {
+  border-radius: 0 0 var(--node-radius) var(--node-radius);
+}
+
+/* ============================================================
+   Node Fields
+   ============================================================ */
+.node-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.node-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+.node-field__label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.node-field__slider-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Shared input styles */
+.node-field__input,
+.node-field__select,
+.node-field__textarea {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-primary);
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.node-field__input:hover,
+.node-field__select:hover,
+.node-field__textarea:hover {
+  background: var(--field-bg-hover);
+  border-color: var(--border-strong);
+}
+
+.node-field__input:focus,
+.node-field__select:focus,
+.node-field__textarea:focus {
+  border-color: var(--node-accent, var(--accent));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--node-accent, var(--accent)) 35%, transparent);
+  background: var(--field-bg-hover);
+}
+
+.node-field__input::placeholder,
+.node-field__textarea::placeholder {
+  color: var(--text-dim);
+}
+
+.node-field__select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+
+.node-field__select option {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.node-field__textarea {
+  resize: vertical;
+  min-height: 48px;
+  line-height: 1.5;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* Slider */
+.node-field__slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-default);
+  outline: none;
+  cursor: pointer;
+  margin: 4px 0;
+}
+
+.node-field__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--node-accent, var(--accent));
+  cursor: pointer;
+  border: 3px solid var(--bg-surface);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--node-accent, var(--accent)) 55%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.node-field__slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--node-accent, var(--accent)) 70%, transparent);
+}
+
+/* Firefox thumb — same category-tinted styling. */
+.node-field__slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--node-accent, var(--accent));
+  cursor: pointer;
+  border: 3px solid var(--bg-surface);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--node-accent, var(--accent)) 55%, transparent);
+}
+
+/* Toggle switch */
+.node-field__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+  /* Button reset — it's a <button> for real toggle behaviour + a11y. */
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  font-family: var(--font-sans);
+}
+
+.node-field__toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.10);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.node-field__toggle--active {
+  background: var(--node-accent, var(--accent));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--node-accent, var(--accent)) 55%, transparent);
+}
+
+.node-field__toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.node-field__toggle--active .node-field__toggle-thumb {
+  transform: translateX(16px);
+}
+
+/* Field validation */
+.node-field__req {
+  color: #f87171;
+  margin-left: 3px;
+  font-weight: 700;
+}
+
+.node-field__control--invalid {
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+}
+
+.node-field__error {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: #fca5a5;
+}
+
+/* Display field */
+.node-field__display {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+  padding: 4px 0 0;
+}
+
+/* ============================================================
+   Handle Styles — Glowing ring effect (Langflow-inspired)
+   ============================================================ */
+.base-node .react-flow__handle {
+  width: 12px;
+  height: 12px;
+  background: #fff !important;
+  border: 2.5px solid rgba(168, 85, 247, 0.6);
+  border-radius: 50%;
+  box-shadow:
+    0 0 8px rgba(168, 85, 247, 0.5),
+    0 0 20px rgba(168, 85, 247, 0.2),
+    inset 0 0 3px rgba(255, 255, 255, 0.8);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* Breathing glow ring around each handle (edge point). */
+.base-node .react-flow__handle::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px var(--node-accent, var(--accent));
+  opacity: 0.35;
+  pointer-events: none;
+  animation: handle-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes handle-pulse {
+  0%, 100% { opacity: 0.18; transform: scale(0.85); }
+  50%      { opacity: 0.55; transform: scale(1.15); }
+}
+
+.base-node .react-flow__handle-left {
+  left: -10px;
+}
+
+.base-node .react-flow__handle-right {
+  right: -10px;
+}
+
+/* Glowing ring on hover */
+.base-node .react-flow__handle:hover {
+  transform: scale(1.3);
+  border-color: rgba(168, 85, 247, 0.9);
+  box-shadow:
+    0 0 12px rgba(168, 85, 247, 0.7),
+    0 0 30px rgba(168, 85, 247, 0.35),
+    0 0 60px rgba(168, 85, 247, 0.15),
+    inset 0 0 4px rgba(255, 255, 255, 1);
+}
+
+/* Category-specific handle glow colours */
+.base-node--io .react-flow__handle {
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow:
+    0 0 8px rgba(59, 130, 246, 0.5),
+    0 0 20px rgba(59, 130, 246, 0.2),
+    inset 0 0 3px rgba(255, 255, 255, 0.8);
+}
+.base-node--io .react-flow__handle:hover {
+  border-color: rgba(59, 130, 246, 0.9);
+  box-shadow:
+    0 0 12px rgba(59, 130, 246, 0.7),
+    0 0 30px rgba(59, 130, 246, 0.35),
+    0 0 60px rgba(59, 130, 246, 0.15),
+    inset 0 0 4px rgba(255, 255, 255, 1);
+}
+
+.base-node--processing .react-flow__handle {
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow:
+    0 0 8px rgba(168, 85, 247, 0.5),
+    0 0 20px rgba(168, 85, 247, 0.2),
+    inset 0 0 3px rgba(255, 255, 255, 0.8);
+}
+.base-node--processing .react-flow__handle:hover {
+  border-color: rgba(168, 85, 247, 0.9);
+  box-shadow:
+    0 0 12px rgba(168, 85, 247, 0.7),
+    0 0 30px rgba(168, 85, 247, 0.35),
+    0 0 60px rgba(168, 85, 247, 0.15),
+    inset 0 0 4px rgba(255, 255, 255, 1);
+}
+
+.base-node--logic .react-flow__handle {
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow:
+    0 0 8px rgba(245, 158, 11, 0.5),
+    0 0 20px rgba(245, 158, 11, 0.2),
+    inset 0 0 3px rgba(255, 255, 255, 0.8);
+}
+.base-node--logic .react-flow__handle:hover {
+  border-color: rgba(245, 158, 11, 0.9);
+  box-shadow:
+    0 0 12px rgba(245, 158, 11, 0.7),
+    0 0 30px rgba(245, 158, 11, 0.35),
+    0 0 60px rgba(245, 158, 11, 0.15),
+    inset 0 0 4px rgba(255, 255, 255, 1);
+}
+
+.base-node--utility .react-flow__handle {
+  border-color: rgba(6, 182, 212, 0.6);
+  box-shadow:
+    0 0 8px rgba(6, 182, 212, 0.5),
+    0 0 20px rgba(6, 182, 212, 0.2),
+    inset 0 0 3px rgba(255, 255, 255, 0.8);
+}
+.base-node--utility .react-flow__handle:hover {
+  border-color: rgba(6, 182, 212, 0.9);
+  box-shadow:
+    0 0 12px rgba(6, 182, 212, 0.7),
+    0 0 30px rgba(6, 182, 212, 0.35),
+    0 0 60px rgba(6, 182, 212, 0.15),
+    inset 0 0 4px rgba(255, 255, 255, 1);
+}
+
+/* Pill handles — the labelled handle is itself a rounded box with text inside,
+   acting as the connection point. Overrides the round-dot handle styling. */
+.base-node .react-flow__handle.base-node__handle-pill {
+  width: auto !important;
+  height: 19px !important;
+  min-width: 30px;
+  padding: 0 9px !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--node-accent, var(--accent)) 24%, var(--bg-elevated)) !important;
+  border: 1.5px solid var(--node-accent, var(--accent)) !important;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--node-accent, var(--accent)) 40%, transparent) !important;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--node-accent, var(--accent)) 60%, var(--text-primary));
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+/* Straddle the node edge so the connection point sits on the border. */
+.base-node .react-flow__handle-left.base-node__handle-pill {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+.base-node .react-flow__handle-right.base-node__handle-pill {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+/* No round pulse ring on pill handles. */
+.base-node .react-flow__handle.base-node__handle-pill::after { display: none; }
+
+.base-node .react-flow__handle-left.base-node__handle-pill:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--node-accent, var(--accent)) 60%, transparent) !important;
+}
+.base-node .react-flow__handle-right.base-node__handle-pill:hover {
+  transform: translate(50%, -50%) scale(1.08);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--node-accent, var(--accent)) 60%, transparent) !important;
+}
+
+/* ============================================================
+   Custom Children Area
+   ============================================================ */
+.base-node__children {
+  padding: 0 14px 14px;
+}
+
+/* ============================================================
+   App Layout
+   ============================================================ */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* ============================================================
+   Top Header Bar
+   ============================================================ */
+.app-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  background: linear-gradient(180deg, rgba(23, 30, 46, 0.92), rgba(17, 24, 39, 0.88));
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+/* Thin luminous gradient line under the header — ties the whole UI together. */
+.app-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), rgba(168, 85, 247, 0.8), transparent);
+  opacity: 0.6;
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-header__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, var(--accent), #a855f7);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.app-header__title {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.app-header__subtitle {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================================
+   Workspace — canvas with a floating dock overlaid
+   ============================================================ */
+.app-workspace {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ============================================================
+   Toolbar — Floating glass dock (bottom-center, over canvas)
+   ============================================================ */
+.pipeline-dock {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(28, 33, 48, 0.78), rgba(15, 21, 34, 0.82));
+  border: 1px solid var(--border-default);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    0 4px 18px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(22px) saturate(1.25);
+  -webkit-backdrop-filter: blur(22px) saturate(1.25);
+  max-width: calc(100% - 40px);
+  overflow: visible;
+  animation: dock-rise 0.55s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+}
+
+.pipeline-dock::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes dock-rise {
+  from { opacity: 0; transform: translateX(-50%) translateY(26px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.pipeline-dock__group {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Hairline divider between category groups. */
+.pipeline-dock__divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 6px 2px;
+  background: linear-gradient(to bottom, transparent, var(--border-default), transparent);
+}
+
+/* Dock search — icon button that opens the ⌘K palette (single search). */
+.dock-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  align-self: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.dock-search-btn:hover {
+  color: var(--accent-hover);
+  background: var(--bg-hover);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  transform: translateY(-2px);
+}
+.dock-search-btn:active { transform: translateY(0) scale(0.95); }
+
+/* ============================================================
+   Dock Chip — ghost-icon tile with category-color hover glow
+   ============================================================ */
+.dock-chip {
+  --chip-accent: var(--accent);
+  position: relative;
+  width: 80px;
+  height: 68px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 6px;
+  border-radius: 14px;
+  cursor: grab;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  user-select: none;
+  transform-origin: bottom center;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 0.24s ease,
+    border-color 0.24s ease,
+    background 0.24s ease;
+}
+
+.dock-chip--io { --chip-accent: var(--cat-io); }
+.dock-chip--processing { --chip-accent: var(--cat-processing); }
+.dock-chip--logic { --chip-accent: var(--cat-logic); }
+.dock-chip--utility { --chip-accent: var(--cat-utility); }
+
+/* Large node logo in its category color. */
+.dock-chip__logo {
+  color: var(--chip-accent);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--chip-accent) 35%, transparent));
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.24s ease;
+  pointer-events: none;
+}
+
+.dock-chip__label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  transition: color 0.2s ease;
+  pointer-events: none;
+}
+
+/* Floating name label (macOS-dock tooltip) above the chip on hover. */
+.dock-chip__name {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px) scale(0.9);
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(12, 17, 28, 0.97);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 6;
+}
+/* Little caret under the tooltip. */
+.dock-chip__name::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(12, 17, 28, 0.97);
+}
+.dock-chip:hover .dock-chip__name {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* ── macOS-dock magnification ──────────────────────────────
+   Hovered chip grows most; immediate + second neighbours grow less,
+   giving the smooth taskbar swell. */
+.dock-chip:hover {
+  transform: translateY(-6px) scale(1.5);
+  z-index: 5;
+  background: var(--bg-hover);
+  border-color: color-mix(in srgb, var(--chip-accent) 55%, transparent);
+  box-shadow:
+    0 18px 34px rgba(0, 0, 0, 0.5),
+    0 0 0 1px color-mix(in srgb, var(--chip-accent) 32%, transparent),
+    0 8px 26px color-mix(in srgb, var(--chip-accent) 45%, transparent);
+}
+.dock-chip:hover + .dock-chip,
+.dock-chip:has(+ .dock-chip:hover) {
+  transform: translateY(-3px) scale(1.26);
+}
+.dock-chip:hover + .dock-chip + .dock-chip,
+.dock-chip:has(+ .dock-chip + .dock-chip:hover) {
+  transform: translateY(-1px) scale(1.1);
+}
+
+.dock-chip:hover .dock-chip__logo {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--chip-accent) 85%, transparent));
+}
+
+.dock-chip:active {
+  cursor: grabbing;
+  transition-duration: 0.08s;
+}
+
+/* ============================================================
+   Canvas Wrapper — living aurora backdrop
+   ============================================================ */
+.canvas-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+/* Aurora blobs: three slowly drifting colour clouds behind the dot grid.
+   pointer-events:none + z-index:0 keep them purely decorative under ReactFlow. */
+.canvas-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 44% at 22% 28%, rgba(99, 102, 241, 0.28) 0%, transparent 60%),
+    radial-gradient(34% 40% at 78% 32%, rgba(168, 85, 247, 0.24) 0%, transparent 60%),
+    radial-gradient(46% 50% at 60% 82%, rgba(56, 130, 246, 0.20) 0%, transparent 62%),
+    radial-gradient(30% 36% at 12% 82%, rgba(6, 182, 212, 0.16) 0%, transparent 60%);
+  filter: blur(28px) saturate(1.15);
+  animation: aurora-drift 26s ease-in-out infinite alternate;
+}
+
+/* Vignette: darkens the edges so nodes pop toward the centre. */
+.canvas-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(5, 8, 16, 0.55) 100%);
+}
+
+@keyframes aurora-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(2.5%, -2%, 0) scale(1.08); }
+  100% { transform: translate3d(-2%, 2.5%, 0) scale(1.04); }
+}
+
+/* ReactFlow content sits above the aurora/vignette decorative layers. */
+.canvas-wrapper .react-flow {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+/* ============================================================
+   Elite micro-interactions
+   ============================================================ */
+
+/* Empty-state call-to-action — load the demo pipeline. */
+.canvas-empty-state__cta {
+  pointer-events: auto;
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(168, 85, 247, 0.14));
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.2);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.canvas-empty-state__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(99, 102, 241, 0.34);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.28), rgba(168, 85, 247, 0.22));
+}
+.canvas-empty-state__cta:active { transform: translateY(0) scale(0.97); }
+.canvas-empty-state__cta svg { color: var(--accent-hover); }
+
+/* Active state for the minimap toggle. */
+.canvas-action-btn.is-active {
+  color: var(--accent-hover);
+  background: rgba(99, 102, 241, 0.12);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+/* Node header icon springs on node hover. */
+.base-node__header-icon {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.base-node:hover .base-node__header-icon {
+  transform: scale(1.12) rotate(-5deg);
+}
+
+/* Connections thicken + brighten on hover. */
+.react-flow__edge .react-flow__edge-path {
+  transition: stroke-width 0.15s ease, filter 0.15s ease;
+}
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 3 !important;
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.55)) !important;
+}
+
+/* ============================================================
+   Canvas action cluster (Tidy / Clear) — top-right glass pill
+   ============================================================ */
+.canvas-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(28, 33, 48, 0.7), rgba(15, 21, 34, 0.7));
+  border: 1px solid var(--border-default);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+
+.canvas-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.canvas-action-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+  transform: translateY(-1px);
+}
+
+/* Clear is destructive — it reveals its danger tone only on hover. */
+.canvas-action-btn--danger:hover:not(:disabled) {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.canvas-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Icon-only variant (Undo / Redo) — square, no label. */
+.canvas-action-btn--icon {
+  padding: 7px;
+}
+
+/* Thin separator inside the action cluster. */
+.canvas-actions__sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 3px 2px;
+  background: var(--border-default);
+}
+
+/* ============================================================
+   Edge delete button (hover ✕ on a connection)
+   ============================================================ */
+.edge-delete-fo {
+  overflow: visible;
+}
+
+.edge-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  background: rgba(20, 12, 16, 0.92);
+  color: #fca5a5;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s ease, color 0.15s ease;
+  pointer-events: all;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Reveal on edge hover or selection (button lives inside the edge <g>). */
+.react-flow__edge:hover .edge-delete-btn,
+.react-flow__edge.selected .edge-delete-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.edge-delete-btn:hover {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+
+/* ============================================================
+   Toast notifications — top-center stack
+   ============================================================ */
+.toast-host {
+  position: fixed;
+  top: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 13px 16px;
+  border-radius: 13px;
+  background: linear-gradient(160deg, rgba(30, 36, 52, 0.96), rgba(18, 24, 38, 0.96));
+  border: 1px solid var(--border-default);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  cursor: pointer;
+  pointer-events: all;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Accent bar on the left edge, tinted by toast type. */
+.toast::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+}
+.toast--success::before { background: var(--success); }
+.toast--error::before { background: #ef4444; }
+.toast--info::before { background: var(--accent); }
+
+.toast__icon {
+  display: flex;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.toast--success .toast__icon { color: var(--success); }
+.toast--error .toast__icon { color: #f87171; }
+.toast--info .toast__icon { color: var(--accent-hover); }
+
+.toast__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.toast__title {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.toast__message {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   Confirm dialog (Submit / Clear) — styled window.confirm
+   ============================================================ */
+.confirm-panel {
+  position: relative;
+  width: min(400px, 92vw);
+  padding: 26px 24px 20px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(30, 36, 52, 0.98), rgba(18, 24, 38, 0.98));
+  border: 1px solid var(--border-default);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+
+.confirm-panel__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+.confirm-panel__icon--primary { color: var(--accent-hover); background: rgba(99, 102, 241, 0.14); }
+.confirm-panel__icon--danger { color: #f87171; background: rgba(239, 68, 68, 0.14); }
+
+.confirm-panel__title {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.confirm-panel__message {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 20px;
+}
+
+.confirm-panel__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.confirm-btn {
+  flex: 1;
+  padding: 10px 18px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.confirm-btn--ghost {
+  background: var(--bg-elevated);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+.confirm-btn--ghost:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.confirm-btn--primary {
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: #fff;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+.confirm-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.confirm-btn--danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+.confirm-btn--danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+}
+
+.confirm-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Smoothly tween node positions only while a Tidy is in progress, so normal
+   dragging stays instant. */
+.layout-animating .react-flow__node {
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Submit Button — Floating bottom-right
+   ============================================================ */
+.submit-bar {
+  display: flex;
+  align-items: center;
+}
+
+.submit-bar__button {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px var(--accent-glow), 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submit-bar__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px var(--accent-glow), 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.submit-bar__button:active {
+  transform: translateY(0);
+}
+
+/* ============================================================
+   Empty State
+   ============================================================ */
+.canvas-empty-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.canvas-empty-state__icon {
+  color: var(--accent-hover);
+  opacity: 0.55;
+  margin-bottom: 18px;
+  filter: drop-shadow(0 6px 18px var(--accent-glow));
+  animation: empty-float 3.6s ease-in-out infinite;
+}
+
+@keyframes empty-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+
+.canvas-empty-state__title {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px 0;
+  background: linear-gradient(135deg, #c7d2fe, #a855f7 55%, #67e8f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.canvas-empty-state__subtitle {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-muted);
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* ============================================================
+   Status badge (node header)
+   ============================================================ */
+.base-node__status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: auto;
+}
+
+.base-node__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ============================================================
+   Header ⌘K hint chip
+   ============================================================ */
+.app-header__kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  padding: 5px 9px;
+  line-height: 1;
+}
+
+/* ============================================================
+   Command Palette (Cmd+K)
+   ============================================================ */
+.cmdk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 14vh;
+  background: rgba(5, 8, 16, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.cmdk-panel {
+  width: 520px;
+  max-width: calc(100vw - 40px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.cmdk-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.cmdk-search__icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.cmdk-search__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-family: var(--font-sans);
+}
+
+.cmdk-search__input::placeholder {
+  color: var(--text-dim);
+}
+
+.cmdk-search__kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.cmdk-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.cmdk-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.cmdk-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  text-align: left;
+}
+
+.cmdk-item--active {
+  background: rgba(99, 102, 241, 0.14);
+  color: var(--text-primary);
+}
+
+.cmdk-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--field-bg);
+  color: var(--accent-hover);
+  flex-shrink: 0;
+}
+
+.cmdk-item--active .cmdk-item__icon {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.cmdk-item__label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.cmdk-item__hint {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.cmdk-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.cmdk-footer span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ============================================================
+   Live Execution Glow (runPipeline)
+   ============================================================ */
+.base-node--running {
+  border-color: var(--accent) !important;
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 28px var(--accent-glow),
+    0 0 60px var(--accent-glow),
+    var(--node-shadow) !important;
+  animation: node-run-pulse 0.55s ease-in-out infinite;
+}
+
+@keyframes node-run-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.base-node--done {
+  border-color: rgba(34, 197, 94, 0.5) !important;
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4), var(--node-shadow) !important;
+}
+
+/* ============================================================
+   Run button (header)
+   ============================================================ */
+.run-flow__button {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.run-flow__button:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.run-flow__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   Node Context Menu (right-click)
+   ============================================================ */
+.context-menu {
+  position: absolute;
+  z-index: 50;
+  min-width: 160px;
+  padding: 5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-sans);
+}
+
+.context-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.context-menu__item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.context-menu__item--danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+
+.context-menu__hint {
+  margin-left: auto;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.context-menu__divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 4px 6px;
+}
+
+/* ============================================================
+   Analysis Result Panel (standalone submit)
+   ============================================================ */
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(6, 9, 18, 0.66);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+}
+
+.result-panel {
+  position: relative;
+  width: 360px;
+  max-width: calc(100vw - 48px);
+  background: linear-gradient(160deg, rgba(30, 36, 52, 0.96), rgba(17, 22, 36, 0.97));
+  border: 1px solid var(--border-default);
+  border-radius: 18px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 1px var(--border-subtle),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 28px;
+  font-family: var(--font-sans);
+}
+
+.result-panel__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: var(--field-bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.result-panel__close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.result-panel__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.result-panel__subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 4px 0 20px;
+}
+
+.result-panel__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.result-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px;
+  background: var(--field-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+.result-stat__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  margin-bottom: 4px;
+}
+
+.result-stat__icon--nodes {
+  background: var(--cat-io-surface);
+  color: var(--cat-io);
+}
+
+.result-stat__icon--edges {
+  background: var(--cat-processing-surface);
+  color: var(--cat-processing);
+}
+
+.result-stat__value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.result-stat__label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.result-dag {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+}
+
+.result-dag--valid {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.25);
+  color: var(--success);
+}
+
+.result-dag--invalid {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.result-dag svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.result-dag__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.result-dag__text strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.result-dag__text span {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* Submit button loading spinner */
+.submit-bar__button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.submit-bar__spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error state */
+.result-error {
+  text-align: center;
+  padding: 4px 0;
+}
+
+.result-error__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--cat-logic);
+  margin-bottom: 12px;
+}
+
+.result-error__hint {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.result-error__hint code {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  background: var(--field-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  padding: 2px 6px;
+  color: var(--accent-hover);
+}
+
+/* ============================================================
+   Scrollbar styling
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================
+   Micro-interactions — global polish
+   Tactile press feedback, keyboard focus rings, and a living logo.
+   ============================================================ */
+
+/* Buttons dip on press for a physical, tactile feel. */
+.run-flow__button:active:not(:disabled),
+.canvas-action-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.96);
+  transition-duration: 0.06s;
+}
+
+/* Keyboard focus rings — visible only for keyboard users, never on mouse. */
+.dock-chip:focus-visible,
+.run-flow__button:focus-visible,
+.submit-bar__button:focus-visible,
+.canvas-action-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--bg-primary),
+    0 0 0 4px var(--accent);
+}
+
+/* The logo breathes on hover — subtle lift + glow bloom. */
+.app-header__logo {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+.app-header__brand:hover .app-header__logo {
+  transform: rotate(-6deg) scale(1.08);
+  box-shadow: 0 4px 16px var(--accent-glow), 0 0 24px var(--accent-glow);
+}
+
+/* The ⌘K hint pulses gently to invite discovery. */
+.app-header__kbd {
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.app-header__kbd:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+/* Respect users who ask for less motion — kill transforms & long animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .dock-chip:hover,
+  .app-header__brand:hover .app-header__logo {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Responsive — tablet & mobile
+   ============================================================ */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 14px;
+    height: 50px;
+  }
+
+  .app-header__actions {
+    gap: 6px;
+  }
+
+  /* Dock tightens, hugs the bottom, and scrolls horizontally if needed. */
+  .pipeline-dock {
+    bottom: 16px;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 18px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+  }
+  .pipeline-dock::-webkit-scrollbar { display: none; }
+
+  .pipeline-dock__group {
+    gap: 8px;
+  }
+
+  .dock-chip--icon-only {
+    width: 48px;
+    height: 48px;
+  }
+
+  /* Control dock wraps rather than overflowing the viewport. */
+  .control-dock {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 62vw;
+  }
+  .control-dock__items { flex-wrap: wrap; justify-content: flex-end; }
+
+  /* Reclaim canvas space on smaller screens. */
+  .react-flow__minimap {
+    display: none !important;
+  }
+
+  .canvas-action-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .base-node {
+    min-width: 220px;
+    max-width: 300px;
+  }
+}
+
+/* Touch devices: no hover magnify (it would stick on tap) or name tooltip. */
+@media (hover: none) {
+  .dock-chip:hover,
+  .dock-chip:hover + .dock-chip,
+  .dock-chip:has(+ .dock-chip:hover),
+  .dock-chip:hover + .dock-chip + .dock-chip,
+  .dock-chip:has(+ .dock-chip + .dock-chip:hover) {
+    transform: none;
+  }
+  .dock-chip__name { display: none; }
+}
+
+/* Phones */
+@media (max-width: 560px) {
+  .app-header {
+    padding: 0 10px;
+  }
+
+  /* Trim non-essential header chrome so the actions always fit. */
+  .app-header__subtitle,
+  .app-header__kbd {
+    display: none;
+  }
+
+  .app-header__title {
+    font-size: 14px;
+  }
+
+  .submit-bar__button,
+  .run-flow__button {
+    padding: 9px 14px;
+    font-size: 12px;
+  }
+
+  /* Dock chips shrink so the full palette fits a phone width. */
+  .dock-chip--icon-only {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .pipeline-dock {
+    max-width: calc(100% - 20px);
+  }
+
+  .dock-chip__logo { transform: scale(0.85); }
+
+  .base-node {
+    min-width: 200px;
+    max-width: 82vw;
+  }
+
+  /* Panels breathe to the screen edges. */
+  .result-panel {
+    padding: 20px;
+  }
+
+  .lint__list { width: min(264px, 78vw); }
+  .connect-menu { max-height: 60vh; }
+
+  .cmdk-overlay {
+    padding-top: 8vh;
+  }
+
+  .cmdk-item__hint {
+    display: none;
+  }
+
+  /* Keep ReactFlow's own controls clear of the toolbar edges. */
+  .react-flow__controls {
+    transform: scale(0.9);
+    transform-origin: bottom left;
+  }
+}
+
+/* Very short / landscape phones — pull the dock tight to the bottom edge so it
+   doesn't cover the canvas. */
+@media (max-height: 480px) {
+  .pipeline-dock {
+    bottom: 10px;
+    padding: 8px 10px;
+  }
+
+  .dock-chip--icon-only {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ============================================================
+   Pipeline lint panel (top-left)
+   ============================================================ */
+.lint {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.lint__btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 9px;
+  cursor: pointer;
+  border: 1px solid var(--border-default);
+  background: linear-gradient(160deg, rgba(28, 33, 48, 0.8), rgba(15, 21, 34, 0.8));
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.lint__btn--ok { color: var(--success); }
+.lint__btn--warn { color: #fbbf24; }
+.lint__btn:hover { transform: translateY(-1px); border-color: var(--border-strong); }
+
+.lint__list {
+  width: 264px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  background: linear-gradient(160deg, rgba(28, 33, 48, 0.94), rgba(15, 21, 34, 0.95));
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5);
+}
+.lint__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.lint__close {
+  display: flex;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 5px;
+}
+.lint__close:hover { color: var(--text-primary); background: var(--bg-hover); }
+.lint__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.lint__item:hover:not(:disabled) { background: var(--bg-hover); color: var(--text-primary); }
+.lint__item:disabled { cursor: default; opacity: 0.75; }
+.lint__item svg { color: #fbbf24; flex-shrink: 0; margin-top: 1px; }
+
+/* ============================================================
+   Connect-and-create picker
+   ============================================================ */
+.connect-menu {
+  position: absolute;
+  z-index: 50;
+  min-width: 172px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 5px;
+  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  background: linear-gradient(160deg, rgba(28, 33, 48, 0.96), rgba(15, 21, 34, 0.97));
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  animation: cm-pop 0.14s ease;
+}
+@keyframes cm-pop {
+  from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+.connect-menu__head {
+  padding: 6px 10px 8px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-dim);
+}
+.connect-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.connect-menu__item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.connect-menu__item svg { flex-shrink: 0; }
+.connect-menu__item--io svg { color: var(--cat-io); }
+.connect-menu__item--processing svg { color: var(--cat-processing); }
+.connect-menu__item--logic svg { color: var(--cat-logic); }
+.connect-menu__item--utility svg { color: var(--cat-utility); }
+
+/* ============================================================
+   Draggable control dock (canvas controls) + dock grip
+   ============================================================ */
+.control-dock {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(28, 33, 48, 0.72), rgba(15, 21, 34, 0.72));
+  border: 1px solid var(--border-default);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+.control-dock__grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  align-self: stretch;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  cursor: grab;
+  border-radius: 7px;
+  touch-action: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.control-dock__grip:hover { color: var(--text-secondary); background: var(--bg-hover); }
+.control-dock__grip:active { cursor: grabbing; }
+.control-dock__items {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Node dock drag grip. */
+.dock-grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 44px;
+  align-self: center;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  cursor: grab;
+  border-radius: 8px;
+  touch-action: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.dock-grip:hover { color: var(--text-secondary); background: var(--bg-hover); }
+.dock-grip:active { cursor: grabbing; }
+
+/* Icon-only dock chips (labels removed; name shows as tooltip). */
+.dock-chip--icon-only {
+  width: 56px;
+  height: 56px;
+  gap: 0;
+}
+
+/* ============================================================
+   Custom node dropdown (themed — replaces native <select>)
+   ============================================================ */
+.node-select { position: relative; width: 100%; }
+.node-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-primary);
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.node-select__trigger:hover { background: var(--field-bg-hover); border-color: var(--border-strong); }
+.node-select.is-open .node-select__trigger {
+  border-color: var(--node-accent, var(--accent));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--node-accent, var(--accent)) 30%, transparent);
+}
+.node-select__value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.node-select__chevron { color: var(--text-muted); flex-shrink: 0; transition: transform 0.18s ease, color 0.18s ease; }
+.node-select.is-open .node-select__chevron { transform: rotate(180deg); color: var(--node-accent, var(--accent)); }
+
+.node-select__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: node-select-pop 0.14s ease;
+}
+@keyframes node-select-pop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+.node-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  background: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: left;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.node-select__option:hover { background: var(--bg-hover); color: var(--text-primary); }
+.node-select__option.is-selected { color: var(--node-accent, var(--accent)); font-weight: 600; }
+.node-select__option svg { color: var(--node-accent, var(--accent)); flex-shrink: 0; }
+
+/* ============================================================
+   Confetti burst + success banner (valid pipeline)
+   ============================================================ */
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confetti__piece {
+  position: absolute;
+  top: -12px;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+}
+@keyframes confetti-fall {
+  0% { transform: translate(0, -12px) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--drift, 0), 105vh) rotate(720deg); opacity: 0; }
+}
+
+.result-success {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti { display: none; }
+}
