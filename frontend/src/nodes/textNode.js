@@ -40,6 +40,25 @@ const MAX_WIDTH = 560;
 const CHAR_PX = 7.2;
 const CHROME_PX = 56; // node + field horizontal padding
 
+// Vertical layout for the dynamic {{variable}} input pills on the left edge.
+// Each pill gets an explicit px offset from the top so it clears the header and
+// the pills stay evenly spaced regardless of count (a percentage spread would
+// crowd the header and compress as variables grow). The node's minHeight grows
+// to match so the pills always sit in the body, aligned in a neat column.
+const HEADER_PX = 52; // header height — first pill sits just below it
+const ROW_PX = 32;    // vertical spacing between adjacent input pills
+const BOTTOM_PX = 16; // breathing room below the last pill
+
+/**
+ * Computes the node's minimum height so N input pills fit in an even column
+ * below the header. Returns 0 when there are no inputs (natural height).
+ * @param {number} count - number of {{variable}} input handles
+ * @returns {number} min height in px
+ */
+function heightForInputs(count) {
+  return count > 0 ? HEADER_PX + count * ROW_PX + BOTTOM_PX : 0;
+}
+
 /**
  * Computes node width from the longest line in the text.
  * @param {string} text
@@ -68,19 +87,24 @@ export const textNodeConfig = {
       autoResize: true,
     },
   ],
-  // Width follows the content (height is handled by the textarea). Setting
-  // maxWidth inline overrides the fixed cap in the stylesheet.
+  // Width follows the longest line; height grows to fit the input pill column
+  // (whichever is taller — the textarea or the pills — wins). Setting maxWidth
+  // inline overrides the fixed cap in the stylesheet.
   getStyle: (values) => {
     const width = widthForText(values.text);
-    return { width, maxWidth: width };
+    const minHeight = heightForInputs(extractVariables(values.text).length);
+    return { width, maxWidth: width, minHeight };
   },
-  // Dynamic handles: one input per unique {{variable}}, plus the output.
+  // Dynamic handles: one input per unique {{variable}}, plus the output. Each
+  // input pill gets an explicit top offset so the column stays evenly spaced
+  // and clears the header no matter how many variables are added.
   getHandles: (values) => {
-    const inputs = extractVariables(values.text).map((name) => ({
+    const inputs = extractVariables(values.text).map((name, i) => ({
       type: 'target',
       position: 'left',
       id: `var-${name}`,
       label: name,
+      offset: `${HEADER_PX + i * ROW_PX + ROW_PX / 2}px`,
     }));
     return [...inputs, { type: 'source', position: 'right', id: 'output' }];
   },

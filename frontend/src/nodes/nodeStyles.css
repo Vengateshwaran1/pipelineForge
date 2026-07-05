@@ -856,25 +856,25 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-/* Straddle the node edge so the connection point sits on the border. */
+/* Shift the labelled handle pill completely outside the node to prevent overlapping inner fields. */
 .base-node .react-flow__handle-left.base-node__handle-pill {
-  left: 0;
-  transform: translate(-50%, -50%);
+  left: -2px;
+  transform: translate(-100%, -50%);
 }
 .base-node .react-flow__handle-right.base-node__handle-pill {
-  right: 0;
-  transform: translate(50%, -50%);
+  right: -2px;
+  transform: translate(100%, -50%);
 }
 
 /* No round pulse ring on pill handles. */
 .base-node .react-flow__handle.base-node__handle-pill::after { display: none; }
 
 .base-node .react-flow__handle-left.base-node__handle-pill:hover {
-  transform: translate(-50%, -50%) scale(1.08);
+  transform: translate(-100%, -50%) scale(1.08);
   box-shadow: 0 0 16px color-mix(in srgb, var(--node-accent, var(--accent)) 60%, transparent) !important;
 }
 .base-node .react-flow__handle-right.base-node__handle-pill:hover {
-  transform: translate(50%, -50%) scale(1.08);
+  transform: translate(100%, -50%) scale(1.08);
   box-shadow: 0 0 16px color-mix(in srgb, var(--node-accent, var(--accent)) 60%, transparent) !important;
 }
 

@@ -5,7 +5,7 @@
 // and an escape-hatch children slot for custom body content.
 
 import React, { useEffect } from 'react';
-import { Handle, Position, NodeResizer } from 'reactflow';
+import { Handle, Position, NodeResizer, useUpdateNodeInternals } from 'reactflow';
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import { NodeField } from './NodeField';
@@ -94,11 +94,16 @@ export function BaseNode({ id, data, selected, config, children }) {
   // When the handle set changes (e.g. a {{variable}} handle is removed),
   // prune any edges left dangling on this node.
   const syncEdgesForNode = useStore((s) => s.syncEdgesForNode);
+  const updateNodeInternals = useUpdateNodeInternals();
   const handleKey = handles.map((h) => `${id}-${h.id}`).join('|');
   useEffect(() => {
     const validIds = new Set(handleKey ? handleKey.split('|') : []);
     syncEdgesForNode(id, validIds);
-  }, [handleKey, id, syncEdgesForNode]);
+    // Handle set changed (added/removed {{variable}} handle, or positions
+    // shifted as siblings redistribute). Tell ReactFlow to re-measure this
+    // node's handles, otherwise edges render at stale coords ("flying").
+    updateNodeInternals(id);
+  }, [handleKey, id, syncEdgesForNode, updateNodeInternals]);
 
   const IconComponent = getIcon(icon);
 
