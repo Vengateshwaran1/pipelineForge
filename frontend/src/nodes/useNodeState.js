@@ -1,82 +1,86 @@
 // useNodeState.js
-// Custom hook for managing node field state with automatic store synchronization.
-// Eliminates the need for individual useState calls in each node component.
+// Custom hook for managing node field state.
+//
+// Single source of truth: the Zustand store. Field values live in
+// store.nodes[].data, which ReactFlow mirrors into each node's `data` prop.
+// The hook derives its live view from `data` and writes through to the store —
+// there is no separate local copy to drift out of sync.
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { useStore } from '../store';
+import { useMemo, useCallback, useRef, useEffect } from 'react';
+import { useStore } from '../store/store';
 
 /**
- * Initializes field values from node data, config defaults, or dynamic default functions.
+ * Computes a single field's default value.
+ * Priority: dynamic default fn → static config default → type-based fallback.
  * @param {string} nodeId - The node's unique identifier
- * @param {object} data - The node's data object from ReactFlow
- * @param {Array} fields - Array of field config objects from the node config
- * @returns {object} Initial values map { fieldName: value }
+ * @param {object} field - Field config object
+ * @returns {any} default value
  */
-function computeInitialValues(nodeId, data, fields) {
-  const values = {};
-  for (const field of fields) {
-    if (data?.[field.name] !== undefined) {
-      // Priority 1: Value already in node data
-      values[field.name] = data[field.name];
-    } else if (typeof field.defaultValueFn === 'function') {
-      // Priority 2: Dynamic default based on node id
-      values[field.name] = field.defaultValueFn(nodeId);
-    } else if (field.default !== undefined) {
-      // Priority 3: Static default from config
-      values[field.name] = field.default;
-    } else {
-      // Priority 4: Type-based fallback
-      switch (field.type) {
-        case 'checkbox':
-          values[field.name] = false;
-          break;
-        case 'slider':
-          values[field.name] = field.min ?? 0;
-          break;
-        default:
-          values[field.name] = '';
-      }
-    }
+function computeDefault(nodeId, field) {
+  if (typeof field.defaultValueFn === 'function') {
+    return field.defaultValueFn(nodeId);
   }
-  return values;
+  if (field.default !== undefined) {
+    return field.default;
+  }
+  switch (field.type) {
+    case 'checkbox':
+      return false;
+    case 'slider':
+      return field.min ?? 0;
+    default:
+      return '';
+  }
 }
 
 /**
  * Custom hook for node field state management.
  *
- * Provides a clean getValue/setValue API that:
- * - Initializes values from data, config defaults, or dynamic defaults
- * - Keeps local React state in sync with the Zustand store
- * - Batches updates to avoid unnecessary re-renders
+ * Provides a getValue/setValue API backed entirely by the store:
+ * - Derives values from the node's `data` prop (the store's mirror), falling
+ *   back to config defaults so readers never see `undefined`.
+ * - setValue writes straight to the store; the re-render flows back through
+ *   `data`, keeping a single source of truth.
+ * - Seeds any missing defaults into the store once on mount so other nodes,
+ *   dynamic handles, and Submit can read them.
  *
  * @param {string} nodeId - The node's unique identifier
- * @param {object} data - The node's data object from ReactFlow
+ * @param {object} data - The node's data object from ReactFlow (store mirror)
  * @param {Array} fields - Array of field config objects from the node config
  * @returns {{ getValue: (name: string) => any, setValue: (name: string, value: any) => void, values: object }}
  */
 export function useNodeState(nodeId, data, fields) {
   const updateNodeField = useStore((state) => state.updateNodeField);
-  const initialValues = useRef(computeInitialValues(nodeId, data, fields));
-  const [values, setValues] = useState(initialValues.current);
 
-  // Sync initial values to the store on mount so other nodes/components can read them
-  useEffect(() => {
-    const init = initialValues.current;
-    for (const [fieldName, fieldValue] of Object.entries(init)) {
-      updateNodeField(nodeId, fieldName, fieldValue);
+  // Live view derived from the store's mirror. `??` keeps falsy-but-valid
+  // values (e.g. '' or 0) and only falls back before the mount-seed lands.
+  const values = useMemo(() => {
+    const v = {};
+    for (const field of fields) {
+      v[field.name] = data?.[field.name] ?? computeDefault(nodeId, field);
     }
-    // Only run on mount
+    return v;
+  }, [data, fields, nodeId]);
+
+  // Seed missing defaults into the store once, so downstream readers
+  // (dynamic {{variable}} handles, Submit serialization) see real values.
+  const seeded = useRef(false);
+  useEffect(() => {
+    if (seeded.current) return;
+    seeded.current = true;
+    for (const field of fields) {
+      if (data?.[field.name] === undefined) {
+        updateNodeField(nodeId, field.name, computeDefault(nodeId, field));
+      }
+    }
+    // Mount only — subsequent value changes flow through the store directly.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getValue = useCallback(
-    (name) => values[name],
-    [values]
-  );
+  const getValue = useCallback((name) => values[name], [values]);
 
   const setValue = useCallback(
     (name, value) => {
-      setValues((prev) => ({ ...prev, [name]: value }));
       updateNodeField(nodeId, name, value);
     },
     [nodeId, updateNodeField]

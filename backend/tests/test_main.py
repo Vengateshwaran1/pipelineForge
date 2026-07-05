@@ -5,7 +5,9 @@ Run:  cd backend && pytest
 
 from fastapi.testclient import TestClient
 
-from main import app, is_dag, Node, Edge
+from app.main import app
+from app.graph import is_dag
+from app.schemas import Node, Edge
 
 client = TestClient(app)
 

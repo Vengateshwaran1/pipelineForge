@@ -4,7 +4,7 @@
 
 import { motion } from 'framer-motion';
 import { Copy, Trash2 } from 'lucide-react';
-import { useStore } from './store';
+import { useStore } from '../store/store';
 
 /**
  * @param {object} props

@@ -7,7 +7,7 @@
 
 import { BaseEdge, getSmoothStepPath } from 'reactflow';
 import { X } from 'lucide-react';
-import { useStore } from './store';
+import { useStore } from '../store/store';
 
 export function FlowEdge({
   id,

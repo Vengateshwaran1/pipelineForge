@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, XCircle, Info } from 'lucide-react';
-import { useStore } from './store';
+import { useStore } from '../store/store';
 
 const ICONS = { success: CheckCircle2, error: XCircle, info: Info };
 const DEFAULT_DURATION = 4500;

@@ -7,7 +7,7 @@ import {
     applyNodeChanges,
     applyEdgeChanges,
   } from 'reactflow';
-import { topologicalOrder, computeLayout } from './graph';
+import { topologicalOrder, computeLayout } from '../lib/graph';
 
 export const useStore = create(persist((set, get) => ({
     nodes: [],

@@ -4,16 +4,16 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import ReactFlow, { Controls, Background, MiniMap, Panel } from 'reactflow';
-import { useStore } from './store';
+import { useStore } from '../store/store';
 import { shallow } from 'zustand/shallow';
-import { buildNodeTypes, nodeConfigs } from './nodes/nodeRegistry';
+import { buildNodeTypes, nodeConfigs } from '../nodes/nodeRegistry';
 import { MousePointerClick, Wand2, Trash2, Undo2, Redo2, Maximize2, Map, Sparkles, Zap } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { NodeContextMenu } from './contextMenu';
+import { NodeContextMenu } from '../components/contextMenu';
 import { FlowEdge } from './FlowEdge';
-import { LintPanel } from './LintPanel';
-import { ControlDock } from './ControlDock';
-import { getToolbarItems } from './nodes/nodeRegistry';
+import { LintPanel } from '../components/LintPanel';
+import { ControlDock } from '../components/ControlDock';
+import { getToolbarItems } from '../nodes/nodeRegistry';
 
 import 'reactflow/dist/style.css';
 

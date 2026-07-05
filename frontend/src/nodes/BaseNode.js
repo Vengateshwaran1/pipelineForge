@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import { NodeField } from './NodeField';
 import { useNodeState } from './useNodeState';
-import { useStore } from '../store';
+import { useStore } from '../store/store';
 import './nodeStyles.css';
 
 /**

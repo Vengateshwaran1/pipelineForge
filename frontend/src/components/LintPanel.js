@@ -5,10 +5,10 @@
 
 import { useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle2, X } from 'lucide-react';
-import { useStore } from './store';
+import { useStore } from '../store/store';
 import { shallow } from 'zustand/shallow';
-import { nodeConfigs } from './nodes/nodeRegistry';
-import { isDAG } from './graph';
+import { nodeConfigs } from '../nodes/nodeRegistry';
+import { isDAG } from '../lib/graph';
 
 export function LintPanel({ onFocus }) {
   const { nodes, edges } = useStore(

@@ -6,8 +6,8 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import { Search, Command } from 'lucide-react';
-import { useStore } from './store';
-import { getToolbarItems } from './nodes/nodeRegistry';
+import { useStore } from '../store/store';
+import { getToolbarItems } from '../nodes/nodeRegistry';
 
 const Icon = ({ name, size = 15 }) => {
   const C = LucideIcons[name] || LucideIcons.Circle;

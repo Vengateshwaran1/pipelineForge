@@ -5,7 +5,7 @@
 import { useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertTriangle, HelpCircle } from 'lucide-react';
-import { useStore } from './store';
+import { useStore } from '../store/store';
 
 export function ConfirmHost() {
   const confirm = useStore((s) => s.confirmState);

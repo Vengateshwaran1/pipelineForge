@@ -1,10 +1,10 @@
-import { PipelineToolbar } from './toolbar.js';
-import { PipelineUI } from './ui.js';
-import { SubmitButton } from './submit.js';
-import { CommandPalette } from './commandPalette.js';
+import { PipelineToolbar } from '../canvas/toolbar.js';
+import { PipelineUI } from '../canvas/ui.js';
+import { SubmitButton } from '../features/submit.js';
+import { CommandPalette } from '../components/commandPalette.js';
 import { useState, useEffect } from 'react';
-import { ToastHost } from './toast.js';
-import { ConfirmHost } from './confirm.js';
+import { ToastHost } from '../components/toast.js';
+import { ConfirmHost } from '../components/confirm.js';
 import { Workflow, Sun, Moon } from 'lucide-react';
 
 function App() {

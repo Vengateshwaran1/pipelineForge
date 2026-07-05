@@ -10,10 +10,10 @@ import { useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Play, CheckCircle2, XCircle, Boxes, Spline, X, Zap, Loader2, AlertTriangle } from 'lucide-react';
-import { useStore } from './store';
+import { useStore } from '../store/store';
 import { shallow } from 'zustand/shallow';
-import { Confetti } from './Confetti';
-import { nodeConfigs } from './nodes/nodeRegistry';
+import { Confetti } from '../components/Confetti';
+import { nodeConfigs } from '../nodes/nodeRegistry';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8000';
 

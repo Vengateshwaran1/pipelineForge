@@ -5,8 +5,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Search, GripVertical } from 'lucide-react';
 import { DraggableNode } from './draggableNode';
-import { getToolbarItems } from './nodes/nodeRegistry';
-import { useStore } from './store';
+import { getToolbarItems } from '../nodes/nodeRegistry';
+import { useStore } from '../store/store';
 
 const OFFSET_KEY = 'pf-dock-offset';
 const ORDER_KEY = 'pf-dock-order';
