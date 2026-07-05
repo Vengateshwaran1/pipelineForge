@@ -14,12 +14,15 @@ app = FastAPI()
 
 # The frontend dev server is a different origin from this API
 # (http://localhost:8000), so CORS must be opened or the browser blocks the
-# POST. A regex matches localhost/127.0.0.1 on ANY port, so it keeps working
-# when CRA falls back to :3001 etc. A "*" wildcard can't be used here because
+# POST. Origins are listed explicitly for :3000 and the :3001 CRA fallback
+# (localhost and 127.0.0.1 forms). A "*" wildcard can't be used here because
 # it's rejected by browsers when combined with allow_credentials.
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3001",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
