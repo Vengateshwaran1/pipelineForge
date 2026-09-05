@@ -15,7 +15,7 @@ import { shallow } from 'zustand/shallow';
 import { Confetti } from '../components/Confetti';
 import { nodeConfigs } from '../nodes/nodeRegistry';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8000';
+const API_BASE = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000').replace(/\/+$/, '');
 
 const selector = (state) => ({ nodes: state.nodes, edges: state.edges });
 
