@@ -12,16 +12,12 @@ from app.schemas import Pipeline
 
 app = FastAPI()
 
-# The frontend dev server is a different origin from this API
-# (http://localhost:8000), so CORS must be opened or the browser blocks the
-# POST. Origins are listed explicitly for :3000 and the :3001 CRA fallback
-# (localhost and 127.0.0.1 forms). A "*" wildcard can't be used here because
-# it's rejected by browsers when combined with allow_credentials.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:3001",
+        "https://pipeline-forge-two.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
